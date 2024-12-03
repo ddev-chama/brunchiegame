@@ -1,5 +1,6 @@
 .relativeObject{
     position: relative;
+    text-align: center;
 }
 .cardBg{
     margin: 0 auto;

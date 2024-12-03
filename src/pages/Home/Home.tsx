@@ -105,7 +105,7 @@ const Home: React.FC = () => {
             </IonCol>
           </IonRow>
 
-          <IonRow style={{ padding: '4em 0' }}>
+          <IonRow style={{ padding: '5em 0' }}>
             <IonCol>
               <IonButton expand='block' color="light" shape='round' fill='outline' onClick={showQuestionList}>
                 <b>ดูหมวดหมู่คำถาม</b>

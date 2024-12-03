@@ -84,3 +84,11 @@ z-index: 5;
     width: 200px;
   }
 }
+
+.setup-header {
+  max-width: 85%;
+  margin: auto;
+}
+.set-m-top{
+  margin-top: -10%;
+}

@@ -56,13 +56,12 @@ const GameSetup: React.FC = () => {
     <IonPage>
       <IonContent color='main'>
         <IonGrid>
-          <IonRow className='head-my-app'>
-            <img src='/icon/2-1.png'></img>
+          <IonRow className='head-my-app setup-header'>
+              <img src='/head/head.png'></img>
           </IonRow>
 
-          <IonRow>
+          <IonRow className='set-m-top'>
             <IonCol size="12" className='cardContainer'>
-              <img className="topIcon" src='/icon/2-2.png'></img>
               <Swiper
                 effect={'cards'}
                 modules={[EffectCards]}
@@ -109,12 +108,12 @@ const GameSetup: React.FC = () => {
             </IonCol>
           </IonRow>
 
-          <IonRow>
+          <IonRow className='ion-padding-top'>
             <IonCol size="12">
               <IonButton expand='block' color="light" shape='round' fill='outline' onClick={handleButtonClick}><b>เริ่มค้นใจ</b></IonButton>
             </IonCol>
             <IonCol size="12">
-              <IonButton expand='block' color="light" shape='round' fill='outline' routerLink='/seemore'><b>All Category</b></IonButton>
+              <IonButton expand='block' color="light" shape='round' fill='outline' routerLink='/seemore'><b>All CATEGORY</b></IonButton>
             </IonCol>
           </IonRow>
 

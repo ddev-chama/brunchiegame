@@ -164,6 +164,8 @@ const PlayGame: React.FC = () => {
                 </SwiperSlide>
               </Swiper>
             </IonCol>
+          </IonRow>
+          <IonRow className="ion-padding-top">
             <IonCol size="12">
               <IonButton expand='block' color="main2" shape='round' fill='solid' onClick={seemorepage}><b>All Category</b></IonButton>
             </IonCol>

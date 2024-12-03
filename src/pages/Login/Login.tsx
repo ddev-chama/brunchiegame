@@ -137,7 +137,7 @@ import { getLineLoginUrl } from '../../utils/lineAuth';
                 <IonText className="ion-float-right">Forget Password?</IonText>
               </IonCol>
             </IonRow>
-            <IonRow>
+            <IonRow className='ion-padding-top'>
               <IonCol>
                 <IonButton
                   className="form_submit"
@@ -150,7 +150,7 @@ import { getLineLoginUrl } from '../../utils/lineAuth';
               </IonCol>
             </IonRow>
             
-            <IonRow>
+            <IonRow className='ion-padding-top'>
               <IonCol size="12">
                 <IonButton
                   expand="block"
@@ -159,7 +159,7 @@ import { getLineLoginUrl } from '../../utils/lineAuth';
                   fill="outline"
                   onClick={handleGuestLogin} // Use handleGuestLogin
                 >
-                  <b>guest</b>
+                  <b>GUEST</b>
                 </IonButton>
               </IonCol>
             </IonRow>

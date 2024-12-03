@@ -11,7 +11,7 @@ const SeeMore: React.FC = () => {
     <IonPage>
       <IonContent color='main'>
         <IonGrid>
-          <IonRow className='custom-card'>
+          <IonRow className='head-my-app'>
             <img src='/icon/2-1.png'></img>
           </IonRow>
           <IonRow>
