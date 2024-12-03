@@ -58,7 +58,7 @@ const Home: React.FC = () => {
     const overlay = document.querySelector('.swal-overlay') as HTMLElement;
     if (overlay) {
       overlay.onclick = (e) => {
-        if (e.target === overlay) {
+        if (e.target === overlay && swal.close) {
           swal.close();
         }
       };
@@ -67,12 +67,12 @@ const Home: React.FC = () => {
 
   const showQuestionList = () => {
     showCustomAlert("รายการคำถาม", [
-      "หมวดหมู่ที่ 1 : สุ่ม",
+      "หมวดหมู่ที่ 1 : สุ่มจากทุกหมวดคำถาม",
       "หมวดหมู่ที่ 2 : การงานการเงิน",
       "หมวดหมู่ที่ 3 : หมวดความสัมพันธ์",
       "หมวดหมู่ที่ 4 : หมวดทั่วไป",
       "หมวดหมู่ที่ 5 : หมวดความรัก",
-      "หมวดหมู่ที่ 6 : หมวด 18+",
+      // "หมวดหมู่ที่ 6 : หมวด 18+",
     ]);
   };
 
