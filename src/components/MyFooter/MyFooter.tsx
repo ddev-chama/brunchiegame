@@ -1,5 +1,5 @@
 import {  IonIcon, IonLabel, IonTabBar, IonTabButton  } from '@ionic/react';
-import { bag, home, logOutSharp, openSharp,people } from 'ionicons/icons';
+import { bag, home, logOutSharp, menu, openSharp,people } from 'ionicons/icons';
 import '../MyFooter/MyFooter.css';
 import { useHistory } from 'react-router-dom'; // Import useHistory for redirection
 import Swal from 'sweetalert';
@@ -36,10 +36,8 @@ const MyFooter: React.FC = () => {
       
     }
   }, []);
-  const handleLogout = () => {
-    localStorage.removeItem('userSession'); // Remove session from localStorage
-    localStorage.removeItem('line_access_token'); // Remove line session from localStorage
-    history.push('/login'); // Redirect to login page
+  const handleMenu = () => {
+    history.push('/menu'); // Redirect to login page
   };
   const handleAccount = () => {
     swal({
@@ -98,9 +96,9 @@ const openBrowserWithOptions = async (url: string) => {
             <IonIcon icon={people} />
             <IonLabel>Account</IonLabel>
           </IonTabButton> */}
-          <IonTabButton onClick={handleLogout} tab="logout"> {/* Use onClick for logout */}
-          <IonIcon icon={logOutSharp} />
-          <IonLabel>Logout</IonLabel>
+          <IonTabButton onClick={handleMenu} tab="menu"> {/* Use onClick for logout */}
+          <IonIcon icon={menu} />
+          <IonLabel>Menu</IonLabel>
         </IonTabButton>
         </IonTabBar>
     </>
