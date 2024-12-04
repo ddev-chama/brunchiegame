@@ -15,8 +15,8 @@ import axios from 'axios';
 import './Register.css'; // Add your custom styles here
 
 const Register: React.FC = () => {
-  const [name, setName] = useState<string>('');
-  const [username, setUsername] = useState<string>(''); // Changed from email to username
+  const [username, setUsername] = useState<string>('');
+  const [email, setEmail] = useState<string>(''); // Changed from email to username
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>(''); // New state for confirm password
   const history = useHistory();
@@ -35,9 +35,8 @@ const Register: React.FC = () => {
             return;
         }else{
 
-        // const response = await axios.post('api/mo-jwt-register', {
-          const response = await axios.post(`https://brunchtime.org/wp-json/api/v1/mo-jwt-register`, {
-          apikey : 'VZtfDKKhHoXoPwaDUcZOOpTuMYWEuBYV',
+          const response = await axios.post(`https://brunchtime.org/wp-json/simple-auth/v1/register`, {
+          email : email,
           username : username,
           password : password,
         });
@@ -57,7 +56,7 @@ const Register: React.FC = () => {
         console.error("Registration error:", error);
         Swal({
             title: 'การลงทะเบียนล้มเหลว',
-            text: 'มีปัญหาในการลงทะเบียนของคุณ กรุณาลองอีกครั้ง',
+            text: 'บัญชีนี้ได้ถูกลงทะเบียนไปแล้ว กรุณาใช้บัญชีอื่น',
             icon: 'error',    
         });
       }
@@ -75,9 +74,9 @@ const Register: React.FC = () => {
           <IonRow>
             <IonInput
               className="form_login"
-              placeholder="Name"
-              value={name}
-              onIonInput={(e) => setName(e.detail.value!)}
+              placeholder="Username"
+              value={username}
+              onIonInput={(e) => setUsername(e.detail.value!)}
               autocomplete="off"
             />
           </IonRow>
@@ -85,8 +84,8 @@ const Register: React.FC = () => {
             <IonInput
               className="form_login"
               placeholder="Email" // Changed from Email to Username
-              value={username} // Updated state variable
-              onIonInput={(e) => setUsername(e.detail.value!)} // Updated state function
+              value={email} // Updated state variable
+              onIonInput={(e) => setEmail(e.detail.value!)} // Updated state function
               autocomplete="off"
             />
           </IonRow>
