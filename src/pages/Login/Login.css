@@ -82,3 +82,24 @@
   .link:hover {
 	color: darkblue;         /* Change color on hover */
   }
+
+
+/* New styles for password visibility toggle */
+.password-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-toggle-icon {
+    position: absolute;
+    right: 30px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 99;
+    color: #666;
+}
+
+.password-toggle-icon:hover {
+    color: #333;
+}
