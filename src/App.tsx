@@ -42,6 +42,8 @@ import Register from './pages/Register/Register';
 import RandomCard from './pages/RandomCard/RandomCard';
 import Callback from './pages/Callback/Callback';
 import RiffleShuffle from './components/RiffleShuffle/RiffleShuffle';
+import Menu from './components/Menu/Menu';
+import Forget from './pages/Forget/Forget';
 
 setupIonicReact();
 
@@ -83,6 +85,9 @@ const App: React.FC = () => {
           <Route exact path="/register">
             <Register />
           </Route>
+          <Route exact path="/forget">
+            <Forget />
+          </Route>
           <Route exact path="/gamesetup">
             {isAuthenticated ? <GameSetup /> : <Redirect to="/login" />}
           </Route>
@@ -94,6 +99,9 @@ const App: React.FC = () => {
           </Route>
           <Route exact path="/randomcard">
             {isAuthenticated ? <RandomCard /> : <Redirect to="/login" />}
+          </Route>
+          <Route exact path="/menu">
+            {isAuthenticated ? <Menu /> : <Redirect to="/login" />}
           </Route>
           <Route exact path="/endgame">
             {isAuthenticated ? <EndGame /> : <Redirect to="/login" />}
