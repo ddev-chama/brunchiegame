@@ -27,9 +27,9 @@ const Login: React.FC = () => {
       const userSession = localStorage.getItem('userSession');
       const token = localStorage.getItem('line_access_token');
       if (userSession || token) {
-          history.push('/home');
+          history.replace('/home');
         } else {
-          history.push('/login');
+          history.replace('/login');
       }
   }, [history]);
   
@@ -97,7 +97,7 @@ const Login: React.FC = () => {
           localStorage.setItem('userSession', 'guest');
           localStorage.setItem('user_display_name', 'Guest');
           localStorage.setItem('userId', 'none');
-          history.replace('/home');
+          window.location.reload();
       });
   };
 
