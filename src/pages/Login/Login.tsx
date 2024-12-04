@@ -39,22 +39,34 @@ import { getLineLoginUrl } from '../../utils/lineAuth';
     
     try {
       // const response = await axios.post('/api/mo-jwt', {
-      const response = await axios.post('https://brunchtime.org/wp-json/api/v1/mo-jwt', {
-        username: appUsername,
+      const response = await axios.post('https://brunchtime.org/wp-json/simple-auth/v1/login', {
+        login: appUsername,
         password: appPassword
       });
 
       // Successful login logic
       if (response.status === 200) {
-        localStorage.setItem('userSession', JSON.stringify({ username: appUsername })); // Save username or other data
-        Swal({
-          title: 'เข้าสู่ระบบสำเร็จ',
-          text: 'คุณเข้าสู่ระบบเรียบร้อยแล้ว!',
-          icon: 'success',
-        }).then(() => {
-          history.replace('/home'); // Navigate to home page
-          window.location.replace('/');
-        });
+        // เก็บข้อมูลทั้งหมดจาก response.data
+        localStorage.setItem('userData', JSON.stringify(response.data));
+        
+        if (response.data.token && response.data.user_id) {
+          // เก็บ user_id แยก (ถ้ามี)
+          localStorage.setItem('userId', response.data.user_id);
+          // เก็บ token แยก (ถ้ามี)
+          localStorage.setItem('userSession', response.data.token);
+
+          Swal({
+            title: 'เข้าสู่ระบบสำเร็จ',
+            text: 'คุณเข้าสู่ระบบเรียบร้อยแล้ว!',
+            icon: 'success',
+          }).then(() => {
+            history.replace('/home'); // Navigate to home page
+            window.location.replace('/');
+          });
+        
+        
+        }
+        
       }
     }
     catch (error) {
