@@ -63,7 +63,7 @@ const RandomCard: React.FC = () => {
     'question2': 'icon-2', 
     'question3': 'icon-3',
     'question4': 'icon-4',
-    'question7': 'icon-7',
+    // 'question7': 'icon-7',
   };
 
   // Function to shuffle lines
@@ -92,7 +92,7 @@ const RandomCard: React.FC = () => {
   const loadMultipleTextContent = async () => {
     setLoading(true);
     const allLines: { text: string, iconFile: string }[] = [];
-    const questionFiles = ['question1', 'question2', 'question3', 'question4', 'question7'];
+    const questionFiles = ['question1', 'question2', 'question3', 'question4'];
 
     const questionFileLines: { [key: string]: { text: string, iconFile: string }[] } = {};
 
