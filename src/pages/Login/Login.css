@@ -103,3 +103,15 @@
 .password-toggle-icon:hover {
     color: #333;
 }
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+	ion-grid{
+		padding: 0px 100px;
+	}
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1366px) {
+	ion-grid{
+		padding: 0px 150px; 
+	}
+}
