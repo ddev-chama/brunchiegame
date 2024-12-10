@@ -31,7 +31,7 @@ const Login: React.FC = () => {
         } else {
           history.replace('/login');
       }
-  }, [history]);
+  }, []);
   
   const handleLogin = async () => {
       const appUsername = email;
@@ -56,6 +56,7 @@ const Login: React.FC = () => {
                       text: 'คุณเข้าสู่ระบบเรียบร้อยแล้ว!',
                       icon: 'success',
                   }).then(() => {
+                     location.reload()
                       history.replace('/home');
                   });
               }
