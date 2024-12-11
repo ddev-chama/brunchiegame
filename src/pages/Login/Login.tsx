@@ -56,7 +56,7 @@ const Login: React.FC = () => {
                       text: 'คุณเข้าสู่ระบบเรียบร้อยแล้ว!',
                       icon: 'success',
                   }).then(() => {
-                     location.reload()
+                     window.location.replace('/home');
                       history.replace('/home');
                   });
               }
@@ -98,7 +98,8 @@ const Login: React.FC = () => {
           localStorage.setItem('userSession', 'guest');
           localStorage.setItem('user_display_name', 'Guest');
           localStorage.setItem('userId', 'none');
-          window.location.reload();
+          window.location.replace('/home');
+          history.replace('/home');
       });
   };
 
