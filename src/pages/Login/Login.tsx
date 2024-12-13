@@ -175,7 +175,7 @@ const Login: React.FC = () => {
                               fill="outline"
                               onClick={handleGuestLogin}
                           >
-                              <b>GUEST</b>
+                              <b>JOIN AS GUEST</b>
                           </IonButton>
                       </IonCol>
                   </IonRow>
