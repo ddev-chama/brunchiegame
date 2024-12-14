@@ -16,6 +16,7 @@ import axios from 'axios';
 import './Login.css';
 import { eyeOutline, eyeOffOutline } from 'ionicons/icons';
 import { getLineLoginUrl } from '../../utils/lineAuth';
+import { Purchases, LOG_LEVEL } from "@revenuecat/purchases-capacitor";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>('');
@@ -31,6 +32,12 @@ const Login: React.FC = () => {
         } else {
           history.replace('/login');
       }
+      (async () => {
+        await Purchases.setLogLevel({ level: LOG_LEVEL.DEBUG });
+        await Purchases.configure({ apiKey: import.meta.env.VITE_API_KEY_PURCHASE });
+        await Purchases.setSimulatesAskToBuyInSandbox({ simulatesAskToBuyInSandbox: true });
+      });
+      
   }, []);
   
   const handleLogin = async () => {
@@ -106,6 +113,11 @@ const Login: React.FC = () => {
   const handleRegisterClick = () => {
       history.push('/register');
   };
+
+  const handlePurchasePackage = async () => {
+    const offerings = await Purchases.getOfferings();
+    console.log(JSON.stringify(offerings));
+  }
 
   return (
       <IonPage>
@@ -189,6 +201,14 @@ const Login: React.FC = () => {
                           <div className="forgotpass">
                               Don't have an account?
                               <span className='link' onClick={handleRegisterClick}>Register</span>
+                          </div>
+                      </IonCol>
+                  </IonRow>
+                  <IonRow className="ion-padding-top">
+                      <IonCol>
+                          <div className="forgotpass">
+                              Test Purchase
+                              <span className='link' onClick={handlePurchasePackage}>Register</span>
                           </div>
                       </IonCol>
                   </IonRow>
