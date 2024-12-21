@@ -115,7 +115,7 @@ const Login: React.FC = () => {
 
   const handlePurchasePackage = async () => {
     const offerings = await Purchases.getOfferings();
-    console.log(JSON.stringify(offerings));
+    console.log(offerings);
   }
 
   return (
