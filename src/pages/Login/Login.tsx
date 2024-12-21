@@ -207,7 +207,7 @@ const Login: React.FC = () => {
                       <IonCol>
                           <div className="forgotpass">
                               Test Purchases
-                              <span className='link' onClick={handleRegisterClick}>APp Purchase</span>
+                              <span className='link' onClick={handlePurchasePackage}>APp Purchase</span>
                           </div>
                       </IonCol>
                   </IonRow>
