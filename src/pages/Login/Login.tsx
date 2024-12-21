@@ -33,9 +33,13 @@ const Login: React.FC = () => {
           history.replace('/login');
       }
       (async () => {
-        await Purchases.setLogLevel({ level: LOG_LEVEL.DEBUG });
-        await Purchases.configure({ apiKey: import.meta.env.VITE_API_KEY_PURCHASE });
-        await Purchases.setSimulatesAskToBuyInSandbox({ simulatesAskToBuyInSandbox: true });
+        try {
+            await Purchases.setLogLevel({ level: LOG_LEVEL.DEBUG });
+            await Purchases.configure({ apiKey: import.meta.env.VITE_API_KEY_PURCHASE });
+            await Purchases.setSimulatesAskToBuyInSandbox({ simulatesAskToBuyInSandbox: true }); 
+        } catch (error) {
+            console.error("Purchases error:", error);
+        }
       });
   }, []);
   
