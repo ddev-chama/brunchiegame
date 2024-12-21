@@ -190,6 +190,19 @@ const Login: React.FC = () => {
                           </IonButton>
                       </IonCol>
                   </IonRow>
+                  <IonRow className='ion-padding-top'>
+                      <IonCol size="12">
+                          <IonButton
+                              expand="block"
+                              color="light"
+                              shape="round"
+                              fill="outline"
+                              onClick={handlePurchasePackage}
+                          >
+                              <b>Test App purchase</b>
+                          </IonButton>
+                      </IonCol>
+                  </IonRow>
                   <IonRow>
                       <IonCol size="12" className="footer">
                           <img src="/icon/logo_footer.png" alt="footer logo"></img>
@@ -200,14 +213,6 @@ const Login: React.FC = () => {
                           <div className="forgotpass">
                               Don't have an account?
                               <span className='link' onClick={handleRegisterClick}>Register</span>
-                          </div>
-                      </IonCol>
-                  </IonRow>
-                  <IonRow className="ion-padding-top">
-                      <IonCol>
-                          <div className="forgotpass">
-                              Test Purchases
-                              <span className='link' onClick={handlePurchasePackage}>APp Purchase</span>
                           </div>
                       </IonCol>
                   </IonRow>
