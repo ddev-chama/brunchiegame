@@ -16,6 +16,7 @@ import axios from 'axios';
 import './Login.css';
 import { eyeOutline, eyeOffOutline } from 'ionicons/icons';
 import { getLineLoginUrl } from '../../utils/lineAuth';
+import { Purchases, LOG_LEVEL } from "@revenuecat/purchases-capacitor";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>('');
@@ -31,6 +32,11 @@ const Login: React.FC = () => {
         } else {
           history.replace('/login');
       }
+      (async () => {
+        await Purchases.setLogLevel({ level: LOG_LEVEL.DEBUG });
+        await Purchases.configure({ apiKey: import.meta.env.VITE_API_KEY_PURCHASE });
+        await Purchases.setSimulatesAskToBuyInSandbox({ simulatesAskToBuyInSandbox: true });
+      });
   }, []);
   
   const handleLogin = async () => {
