@@ -113,6 +113,11 @@ const Login: React.FC = () => {
       history.push('/register');
   };
 
+  const handlePurchasePackage = async () => {
+    const offerings = await Purchases.getOfferings();
+    console.log(JSON.stringify(offerings));
+  }
+
   return (
       <IonPage>
           <IonContent color={'main'}>
