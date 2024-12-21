@@ -114,8 +114,12 @@ const Login: React.FC = () => {
   };
 
   const handlePurchasePackage = async () => {
-    const offerings = await Purchases.getOfferings();
-    console.log(offerings);
+    try {
+        const offerings = await Purchases.getOfferings();
+        console.log(offerings);
+    } catch (error) {
+        console.error("Purchase error:", error);
+    }
   }
 
   return (
