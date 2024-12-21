@@ -192,6 +192,14 @@ const Login: React.FC = () => {
                           </div>
                       </IonCol>
                   </IonRow>
+                  <IonRow className="ion-padding-top">
+                      <IonCol>
+                          <div className="forgotpass">
+                              Test Purchases
+                              <span className='link' onClick={handleRegisterClick}>APp Purchase</span>
+                          </div>
+                      </IonCol>
+                  </IonRow>
               </IonGrid>
           </IonContent>
       </IonPage>
