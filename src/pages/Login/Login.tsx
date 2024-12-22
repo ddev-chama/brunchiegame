@@ -36,7 +36,7 @@ const Login: React.FC = () => {
         await Purchases.setLogLevel({ level: LOG_LEVEL.DEBUG });
         await Purchases.configure({ apiKey: import.meta.env.VITE_API_KEY_PURCHASE });
         await Purchases.setSimulatesAskToBuyInSandbox({ simulatesAskToBuyInSandbox: true }); 
-      });
+      })();
   }, []);
   
   const handleLogin = async () => {
