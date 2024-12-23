@@ -13,34 +13,74 @@ import 'swiper/css/effect-cards';
 import { EffectCards } from 'swiper/modules';
 import './PlayGame.css';
 
-const fetchTextFileContent = async (filePath: string) => {
-  const response = await fetch(filePath);
-  const text = await response.text();
-  return text;
-};
+// Import all question sets
+import question1Data from './quiz/question1.json';
+import question2Data from './quiz/question2.json';
+import question3Data from './quiz/question3.json';
+import question4Data from './quiz/question4.json';
+import question7Data from './quiz/question7.json';
 
-const getRandomLines = (lines: string[], maxLines: number) => {
-  // Shuffle the array
-  const shuffled = lines.sort(() => 0.5 - Math.random());
-  // Select up to maxLines from the shuffled array
-  return shuffled.slice(0, maxLines);
-};
-interface statedata {
+// TypeScript interfaces
+interface QuestionSet {
+  questions: string[];
+}
+
+interface QuestionSets {
+  [key: string]: string[];
+}
+interface Question {
+  text: string;
+  category?: string;
+}
+
+interface StateData {
   state: string | null;
 }
 
+// Question sets mapping
+const questionSets: QuestionSets = {
+  'question1': question1Data.questions,
+  'question2': question2Data.questions,
+  'question3': question3Data.questions,
+  'question4': question4Data.questions,
+  'question7': question7Data.questions,
+};
+
+// Fetch questions function
+const fetchQuestions = async (questionSet: string): Promise<string[]> => {
+  try {
+    const questions = questionSets[questionSet];
+    if (!questions) {
+      console.warn(`Question set ${questionSet} not found`);
+      return [];
+    }
+    return questions;
+  } catch (error) {
+    console.error('Error loading questions:', error);
+    return [];
+  }
+};
+  
+// Get random questions helper
+const getRandomQuestions = (questions: string[], count: number): Question[] => {
+  const shuffled = [...questions].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, Math.min(count, shuffled.length)).map(text => ({
+    text,
+    category: undefined
+  }));
+};
+
+// Generate slide images helper
 const generateSlideImages = () => {
   const images: { [key: number]: string } = {};
   const totalImages = 20;
   const imageIndices = Array.from({ length: totalImages }, (_, i) => i + 1);
 
-  // Fisher-Yates shuffle algorithm for better randomization
   for (let i = imageIndices.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [imageIndices[i], imageIndices[j]] = [imageIndices[j], imageIndices[i]];
   }
 
-  // Map shuffled indices to image paths
   imageIndices.forEach((index, position) => {
     const imageNumber = index.toString().padStart(2, '0');
     images[position] = `/head/${imageNumber}.png`;
@@ -51,67 +91,95 @@ const generateSlideImages = () => {
 const slideImages = generateSlideImages();
 
 const PlayGame: React.FC = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [Icon_name, setIcon_name] = useState(0);
-  const [lines, setLines] = useState<string[]>([]);
+  const [lines, setLines] = useState<Question[]>([]);
+  const [currentSlide, setCurrentSlide] = useState<number>(0);
+  const [icon_name, setIcon_name] = useState<string>('');
   const [loading, setLoading] = useState(true);
-  const history = useHistory();
-  const location = useLocation<statedata>();
-  const slideData = location.state;
+  const [cachedQuestions, setCachedQuestions] = useState<QuestionSets>({});
   const [currentImage, setCurrentImage] = useState(slideImages[0]);
+  const [error, setError] = useState<string | null>(null);
 
+  const history = useHistory();
+  const location = useLocation<StateData>();
+  const slideData = location.state;
   const checkRandomStatus = (status: any) => {
-    if(status != 'random'){
+    if (status !== 'random') {
       return status;
-    }
-    else{
-       // for random ,Create an array of the possible paths
-      return history.replace('/randomcard');;
+    } else {
+      return history.replace('/randomcard');
     }
   }
-  
-  const pathQuestion = (pathList: any) => {
+
+  const pathQuestion = (pathList: string): string => {
     switch (pathList) {
       case 'icon-5':
-        return '/txt/question1.txt';
+        return 'question1';
       case 'icon-2':
-        return '/txt/question2.txt';
+        return 'question2';
       case 'icon-3':
-        return '/txt/question3.txt';
+        return 'question3';
       case 'icon-4':
-        return '/txt/question4.txt';
+        return 'question4';
       case 'icon-7':
-        return '/txt/question7.txt';
+        return 'question7';
       default:
-        return '/txt/no_more.txt';
+        return 'question1';
     }
   }
 
-  const loadTextContent = async (pathList: any) => {
+  const loadTextContent = async (pathList: string) => {
+    setLoading(true);
+    setError(null);
+    
     try {
-      const content = await fetchTextFileContent(pathQuestion(pathList));
-      const linesArray = content.split('\n').filter(Boolean);
-      // Get up to 10 random lines
-      const randomLines = getRandomLines(linesArray, 20);
-      setLines(randomLines);
-      setCurrentSlide(0); // Reset to the first slide when loading new content
+      const questionSet = pathQuestion(pathList);
+      
+      // Check cache first
+      if (cachedQuestions[questionSet]) {
+        const randomQuestions = getRandomQuestions(cachedQuestions[questionSet], 20);
+        setLines(randomQuestions);
+        setCurrentSlide(0);
+        setIcon_name(pathList);
+        return;
+      }
+
+      // Load questions if not cached
+      const questionsArray = await fetchQuestions(questionSet);
+      
+      if (questionsArray.length === 0) {
+        throw new Error('No questions found for this category');
+      }
+
+      // Cache the questions
+      setCachedQuestions(prev => ({
+        ...prev,
+        [questionSet]: questionsArray
+      }));
+
+      const randomQuestions = getRandomQuestions(questionsArray, 20);
+      setLines(randomQuestions);
+      setCurrentSlide(0);
       setIcon_name(pathList);
+    } catch (error) {
+      console.error('Error loading questions:', error);
+      setError(error instanceof Error ? error.message : 'An error occurred');
     } finally {
       setLoading(false);
     }
   };
-
+  
   useEffect(() => {
     if (slideData) {
       loadTextContent(checkRandomStatus(slideData));
     }
   }, [slideData]);
 
-  const seemorepage = async () => {
-    return history.push('/seemore');
+  const seemorepage = () => {
+    history.push('/seemore');
   };
-  const endgamepage = async () => {
-    return history.push('/endgame');
+
+  const endgamepage = () => {
+    history.push('/endgame');
   };
 
   const handleSlideChange = (swiper: any) => {
@@ -120,11 +188,26 @@ const PlayGame: React.FC = () => {
       endgamepage();
     } else {
       setCurrentSlide(swiper.activeIndex);
-      // Update the current image based on the slide index
       setCurrentImage(slideImages[swiper.activeIndex] || slideImages[0]);
     }
   };
-  
+
+  if (error) {
+    return (
+      <IonPage>
+        <IonContent className="ion-padding">
+          <div className="error-container">
+            <h2>Error</h2>
+            <p>{error}</p>
+            <IonButton onClick={() => history.push('/seemore')}>
+              Return to Categories
+            </IonButton>
+          </div>
+        </IonContent>
+      </IonPage>
+    );
+  }
+
   return (
     <IonPage>
       <IonLoading
@@ -134,10 +217,10 @@ const PlayGame: React.FC = () => {
       />
       <IonContent className='play-game-content'>
         <IonGrid>
-          <IonRow >
+          <IonRow>
             <IonCol size='12' className='ProgressTab'>
-            <img className='top' src={currentImage} alt='Progress Icon' />
-              <h1 className='head-count'>{currentSlide + 1}/{lines.length}</h1> {/* Adjusted to show number of displayed lines */}
+              <img className='top' src={currentImage} alt='Progress Icon' />
+              <h1 className='head-count'>{currentSlide + 1}/{lines.length}</h1>
             </IonCol>
           </IonRow>
           <IonRow>
@@ -150,13 +233,13 @@ const PlayGame: React.FC = () => {
                 observeParents={true}
                 onSlideChange={handleSlideChange}
               >
-                {lines.map((line, index) => (
-                  <SwiperSlide key={index} className={'slide'+' '+Icon_name}>
-                    <h1>{line}</h1> {/* Display the randomly selected line */}
+                {lines.map((question, index) => (
+                  <SwiperSlide key={index} className={'slide'+' '+icon_name}>
+                    <h1>{question.text}</h1>
                     <img src='/icon/LOGO.svg' className='TopiconInCard' alt='Slide Image' />
-                    <img src={'icon/'+Icon_name+'.svg'} className='seccond-TopiconInCard' alt='Icon' />
+                    <img src={'icon/'+icon_name+'.svg'} className='seccond-TopiconInCard' alt='Icon' />
                     <img src='/icon/LOGO.svg' className='BottomiconInCard' alt='Logo' />
-                    <img src={'icon/'+Icon_name+'.svg'} className='seccond-BottomiconInCard' alt='Icon' />
+                    <img src={'icon/'+icon_name+'.svg'} className='seccond-BottomiconInCard' alt='Icon' />
                   </SwiperSlide>
                 ))}
                 <SwiperSlide className='slide'>
@@ -167,7 +250,15 @@ const PlayGame: React.FC = () => {
           </IonRow>
           <IonRow className="ion-padding-top">
             <IonCol size="12">
-              <IonButton expand='block' color="main2" shape='round' fill='solid' onClick={seemorepage}><b>All Category</b></IonButton>
+              <IonButton 
+                expand='block' 
+                color="main2" 
+                shape='round' 
+                fill='solid' 
+                onClick={seemorepage}
+              >
+                <b>All Category</b>
+              </IonButton>
             </IonCol>
           </IonRow>
         </IonGrid>
@@ -176,5 +267,4 @@ const PlayGame: React.FC = () => {
     </IonPage>
   );
 };
-
 export default PlayGame;
