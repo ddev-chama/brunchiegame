@@ -95,7 +95,7 @@ const Menu: React.FC = () => {
   };
 
   const showQuestionList = () => {
-    showCustomAlert("รายการคำถาม", [
+    showCustomAlert("รายการหมวดหมู่คำถาม", [
       "หมวดหมู่ที่ 1 : สุ่มจากทุกหมวดคำถาม",
       "หมวดหมู่ที่ 2 : การงานการเงิน",
       "หมวดหมู่ที่ 3 : หมวดความสัมพันธ์",
@@ -111,7 +111,6 @@ const Menu: React.FC = () => {
       "อ่านคำถามและคิดคำตอบ",
       "เลือกคำตอบที่คุณคิดว่าถูกต้อง",
       "ตอบคำถามข้อถัดไป",
-      "เล่นต่อไปเพื่อปลดล็อกระดับใหม่ๆ",
     ]);
   };
 
@@ -217,7 +216,7 @@ const deleteAccount = async () => {
             style={{ '--background': 'white', borderRadius: '12px', marginBottom: '8px' }}
           >
             <IonIcon icon={helpCircleOutline} slot="start" style={{ color: '#FFD84D' }} />
-            <IonLabel>รายการคำาม</IonLabel>
+            <IonLabel>รายการหมวดหมู่คำถาม</IonLabel>
           </IonItem>
 
           {localStorage.getItem('userSession') !== 'guest' && (
