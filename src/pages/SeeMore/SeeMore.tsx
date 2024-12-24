@@ -90,7 +90,7 @@ const SeeMore: React.FC = () => {
                 </Link>
               </IonCard>
             </IonCol>
-            {/* <IonCol size="6">
+            <IonCol size="6">
               <IonCard className="custom-card">
               <Link 
                   to={{
@@ -104,7 +104,7 @@ const SeeMore: React.FC = () => {
                   <img src="/card/2-9.png" alt="icon-7" />
                 </Link>
               </IonCard>
-            </IonCol> */}
+            </IonCol>
           </IonRow>
         </IonGrid>
       </IonContent>
