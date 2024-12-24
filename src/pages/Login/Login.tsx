@@ -179,17 +179,17 @@ const Login: React.FC = () => {
                           </IonButton>
                       </IonCol>
                   </IonRow>
-                  <IonRow>
-                      <IonCol size="12" className="footer">
-                          <img src="/icon/logo_footer.png" alt="footer logo"></img>
-                      </IonCol>
-                  </IonRow>
                   <IonRow className="ion-padding-top">
                       <IonCol>
                           <div className="forgotpass">
                               Don't have an account?
-                              <span className='link' onClick={handleRegisterClick}>Register</span>
+                              <span className='link' onClick={handleRegisterClick}> Register</span>
                           </div>
+                      </IonCol>
+                  </IonRow>
+                  <IonRow>
+                      <IonCol size="12" className="footer">
+                          <img src="/icon/logo_footer.png" alt="footer logo"></img>
                       </IonCol>
                   </IonRow>
               </IonGrid>
