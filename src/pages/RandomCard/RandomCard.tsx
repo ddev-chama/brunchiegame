@@ -17,6 +17,7 @@ import question1Data from '../PlayGame/quiz/question1.json';
 import question2Data from '../PlayGame/quiz/question2.json';
 import question3Data from '../PlayGame/quiz/question3.json';
 import question4Data from '../PlayGame/quiz/question4.json';
+import question7Data from '../PlayGame/quiz/question7.json';
 
 // Question sets configuration
 const questionSets = {
@@ -35,6 +36,10 @@ const questionSets = {
   'question4': {
     questions: question4Data.questions,
     icon: 'icon-4'
+  },
+  'question7': {
+    questions: question7Data.questions,
+    icon: 'icon-7'
   }
 };
 
@@ -82,28 +87,37 @@ const RandomCard: React.FC = () => {
 
   const history = useHistory();
   const location = useLocation<string[]>();
+
+  // Modified loadMultipleTextContent function to ensure equal distribution
   const loadMultipleTextContent = async () => {
     setLoading(true);
     try {
-      const totalLines = 20;
+      const totalLines = 20; // Total number of cards we want
+      const numberOfSets = Object.keys(questionSets).length; // Number of question sets
+      const cardsPerSet = Math.floor(totalLines / numberOfSets); // Cards per category
+      let remainingCards = totalLines % numberOfSets; // Any remaining cards
       let allQuestions: Question[] = [];
 
-      // Collect questions from all sets
-      Object.entries(questionSets).forEach(([key, set]) => {
-        const questionsWithIcons = set.questions.map(question => ({
+      // First, get equal number of cards from each set
+      for (const [key, set] of Object.entries(questionSets)) {
+        const setQuestions = set.questions.map(question => ({
           text: question,
           iconFile: set.icon
         }));
-        allQuestions = [...allQuestions, ...questionsWithIcons];
-      });
+        
+        // Shuffle questions within this set
+        const shuffledSetQuestions = shuffleArray(setQuestions);
 
-      // Shuffle all questions
-      const shuffledQuestions = shuffleArray(allQuestions);
+        // Take cardsPerSet number of cards, plus one extra if we have remaining cards
+        const cardsToTake = cardsPerSet + (remainingCards > 0 ? 1 : 0);
+        remainingCards--;
+        
+        allQuestions = [...allQuestions, ...shuffledSetQuestions.slice(0, cardsToTake)];
+      }
 
-      // Take first 20 questions (or less if not enough questions)
-      const selectedQuestions = shuffledQuestions.slice(0, totalLines);
-
-      setLines(selectedQuestions);
+      // Final shuffle of all selected cards
+      const finalShuffledQuestions = shuffleArray(allQuestions);
+      setLines(finalShuffledQuestions);
       setCurrentSlide(0);
     } catch (error) {
       console.error('Error loading questions:', error);
