@@ -42,8 +42,15 @@ import Register from './pages/Register/Register';
 import RandomCard from './pages/RandomCard/RandomCard';
 import Callback from './pages/Callback/Callback';
 import RiffleShuffle from './components/RiffleShuffle/RiffleShuffle';
+import Preload from './pages/Preload/Preload';
+import { PRELOAD_CACHE_KEY, PRELOAD_VERSION } from './config/preloadAssets';
 
 setupIonicReact();
+
+const RootRedirect: React.FC = () => {
+  const cached = typeof window !== 'undefined' && localStorage.getItem(PRELOAD_CACHE_KEY) === PRELOAD_VERSION;
+  return <Redirect to={cached ? '/login' : '/preload'} />;
+};
 
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null); // Check session state
@@ -98,8 +105,11 @@ const App: React.FC = () => {
           <Route exact path="/endgame">
             {isAuthenticated ? <EndGame /> : <Redirect to="/login" />}
           </Route>
+          <Route exact path="/preload">
+            <Preload />
+          </Route>
           <Route exact path="/">
-            <Redirect to="/login" />
+            <RootRedirect />
           </Route>
         </IonRouterOutlet>
       </IonReactRouter>

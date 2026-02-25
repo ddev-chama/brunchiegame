@@ -17,3 +17,9 @@
   height: auto; /* Maintain aspect ratio */
   display: block; /* Remove any default spacing around the image */
 }
+
+/* ป้องกัน double-click + feedback ตอนกำลังนำทาง */
+.see-more--navigating .custom-card {
+  pointer-events: none;
+  opacity: 0.7;
+}
