@@ -17,7 +17,8 @@ interface UserProfile {
 const MyFooter: React.FC = () => {
   const history = useHistory(); // Hook to access the history object
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  
+  const isGuest = localStorage.getItem('userSession') === 'guest';
+
   useEffect(() => {
     
     const token = localStorage.getItem('line_access_token');
@@ -40,8 +41,13 @@ const MyFooter: React.FC = () => {
     localStorage.removeItem('line_access_token'); // Remove line session from localStorage
     history.push('/login'); // Redirect to login page
   };
+
+  const openExternal = (url: string) => {
+    console.log('[MyFooter] openExternal:', url);
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
   const handleAccount = () => {
-    swal({
+    Swal({
       title: `ยินดีต้อนรับ ${profile?.displayName}`,
       text: `
         รายละเอียดบัญชี:
@@ -74,18 +80,20 @@ const MyFooter: React.FC = () => {
             <IonIcon icon={home} />
             <IonLabel>Home</IonLabel>
           </IonTabButton>
-          <IonTabButton href="https://www.brunchtimeshop.com/products" tab="contacts">
+          <IonTabButton onClick={() => openExternal('https://www.brunchtimeshop.com/products')} tab="contacts">
             <IonIcon icon={bag} />
             <IonLabel>Shop</IonLabel>
           </IonTabButton>
-          <IonTabButton href="https://www.brunchtimeshop.com" tab="settings">
+          <IonTabButton onClick={() => openExternal('https://www.brunchtimeshop.com')} tab="settings">
             <IonIcon icon={openSharp} />
             <IonLabel>Website</IonLabel>
           </IonTabButton>
-          <IonTabButton onClick={handleAccount} tab="account">
-            <IonIcon icon={people} />
-            <IonLabel>Account</IonLabel>
-          </IonTabButton>
+          {!isGuest && (
+            <IonTabButton onClick={handleAccount} tab="account">
+              <IonIcon icon={people} />
+              <IonLabel>Account</IonLabel>
+            </IonTabButton>
+          )}
           <IonTabButton onClick={handleLogout} tab="logout"> {/* Use onClick for logout */}
           <IonIcon icon={logOutSharp} />
           <IonLabel>Logout</IonLabel>

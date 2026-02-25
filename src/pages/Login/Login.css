@@ -77,3 +77,105 @@
   .link:hover {
 	color: darkblue;         /* Change color on hover */
   }
+
+/* ========== SweetAlert Popup UX (เข้าสู่ระบบสำเร็จ/ล้มเหลว) ========== */
+.swal-overlay {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+/* Success popup */
+.swal-modal.swal-login-success {
+  width: min(340px, calc(100vw - 32px));
+  padding: 28px 24px 24px;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+.swal-modal.swal-login-success .swal-icon--success {
+  margin-top: 8px;
+  margin-bottom: 12px;
+  border-color: #a5dc86;
+}
+
+.swal-modal.swal-login-success .swal-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+  padding: 0 8px;
+}
+
+.swal-modal.swal-login-success .swal-text {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.5;
+  padding: 0 4px;
+  margin-bottom: 20px;
+}
+
+.swal-modal.swal-login-success .swal-footer {
+  padding-top: 8px;
+  margin-top: 0;
+  border: none;
+}
+
+.swal-modal.swal-login-success .swal-button--confirm {
+  min-width: 120px;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  background: linear-gradient(135deg, #3D5998 0%, #506aa2 100%) !important;
+  box-shadow: 0 4px 12px rgba(61, 89, 152, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.swal-modal.swal-login-success .swal-button--confirm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(61, 89, 152, 0.4);
+}
+
+/* Error popup */
+.swal-modal.swal-login-error {
+  width: min(340px, calc(100vw - 32px));
+  padding: 28px 24px 24px;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+.swal-modal.swal-login-error .swal-icon--error {
+  border-color: #f27474;
+}
+
+.swal-modal.swal-login-error .swal-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+  padding: 0 8px;
+}
+
+.swal-modal.swal-login-error .swal-text {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.5;
+  padding: 0 4px;
+  margin-bottom: 20px;
+}
+
+.swal-modal.swal-login-error .swal-button--confirm {
+  min-width: 120px;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%) !important;
+  box-shadow: 0 4px 12px rgba(192, 57, 43, 0.3);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.swal-modal.swal-login-error .swal-button--confirm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(192, 57, 43, 0.35);
+}

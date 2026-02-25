@@ -60,16 +60,6 @@ const PlayGame: React.FC = () => {
   const slideData = location.state;
   const [currentImage, setCurrentImage] = useState(slideImages[0]);
 
-  const checkRandomStatus = (status: any) => {
-    if(status != 'random'){
-      return status;
-    }
-    else{
-       // for random ,Create an array of the possible paths
-      return history.replace('/randomcard');;
-    }
-  }
-  
   const pathQuestion = (pathList: any) => {
     switch (pathList) {
       case 'icon-5':
@@ -91,10 +81,14 @@ const PlayGame: React.FC = () => {
     try {
       const content = await fetchTextFileContent(pathQuestion(pathList));
       const linesArray = content.split('\n').filter(Boolean);
-      // Get up to 10 random lines
       const randomLines = getRandomLines(linesArray, 20);
+      if (randomLines.length === 0) {
+        console.log('[PlayGame] No questions loaded, redirect to seemore');
+        history.replace('/seemore');
+        return;
+      }
       setLines(randomLines);
-      setCurrentSlide(0); // Reset to the first slide when loading new content
+      setCurrentSlide(0);
       setIcon_name(pathList);
     } finally {
       setLoading(false);
@@ -102,9 +96,18 @@ const PlayGame: React.FC = () => {
   };
 
   useEffect(() => {
-    if (slideData) {
-      loadTextContent(checkRandomStatus(slideData));
+    if (!slideData || typeof slideData !== 'string') {
+      console.log('[PlayGame] No valid slideData, redirect to seemore', slideData);
+      history.replace('/seemore');
+      setLoading(false);
+      return;
     }
+    if (slideData === 'random') {
+      history.replace('/randomcard');
+      setLoading(false);
+      return;
+    }
+    loadTextContent(slideData);
   }, [slideData]);
 
   const seemorepage = async () => {

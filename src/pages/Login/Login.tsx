@@ -52,6 +52,11 @@ import { getLineLoginUrl } from '../../utils/lineAuth';
           title: 'เข้าสู่ระบบสำเร็จ',
           text: 'คุณเข้าสู่ระบบเรียบร้อยแล้ว!',
           icon: 'success',
+          className: 'swal-login-success',
+          buttons: {
+            cancel: { visible: false },
+            confirm: { text: 'ตกลง', className: 'swal-btn-confirm' },
+          },
         }).then(() => {
           history.replace('/home'); // Navigate to home page
           window.location.replace('/');
@@ -65,6 +70,11 @@ import { getLineLoginUrl } from '../../utils/lineAuth';
         title: 'เข้าสู่ระบบล้มเหลว',
         text: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง!',
         icon: 'error',
+        className: 'swal-login-error',
+        buttons: {
+          cancel: { visible: false },
+          confirm: { text: 'ลองอีกครั้ง', className: 'swal-btn-confirm' },
+        },
       });
     }
   };
@@ -80,6 +90,11 @@ import { getLineLoginUrl } from '../../utils/lineAuth';
         title: 'เข้าสู่ระบบล้มเหลว',
         text: 'Please check environment configuration!',
         icon: 'error',
+        className: 'swal-login-error',
+        buttons: {
+          cancel: { visible: false },
+          confirm: { text: 'ตกลง', className: 'swal-btn-confirm' },
+        },
       });
       console.error('LINE login error:', err);
     }
@@ -90,6 +105,11 @@ import { getLineLoginUrl } from '../../utils/lineAuth';
       title: 'เข้าสู่ระบบสำเร็จ',
       text: 'คุณเข้าสู่ระบบเรียบร้อยแล้ว!',
       icon: 'success',
+      className: 'swal-login-success',
+      buttons: {
+        cancel: { visible: false },
+        confirm: { text: 'ตกลง', className: 'swal-btn-confirm' },
+      },
     }).then(() => {
       localStorage.setItem('userSession', 'guest'); // Set session for guest
       history.push('/home'); // Redirect to home

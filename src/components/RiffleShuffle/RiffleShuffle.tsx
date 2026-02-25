@@ -50,11 +50,15 @@ const RiffleShuffle: React.FC = () => {
       }
     });
 
-    // Navigate to next page
-    history.replace({
-      pathname: '/playgame',
-      state: path
-    });
+    // Navigate to next page: random -> RandomCard, อื่น -> PlayGame with path
+    if (path === 'random') {
+      history.replace('/randomcard');
+    } else {
+      history.replace({
+        pathname: '/playgame',
+        state: path
+      });
+    }
   };
 
   const handleShuffle = async () => {
