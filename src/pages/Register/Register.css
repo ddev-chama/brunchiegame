@@ -1,10 +1,75 @@
+/* ใช้ร่วมกับ Login style */
+.form_login {
+  border: none;
+  margin: 0 auto;
+  border: solid 1px #ccc;
+  padding-inline-start: 1.5em !important;
+  border-radius: 65px;
+  background-color: aliceblue;
+}
+
+.form_submit {
+  border-radius: 16px;
+}
+
 .link {
-    color: blue;              /* Link color */
-    text-decoration: underline; /* Underline effect */
-    cursor: pointer;          /* Change cursor to pointer */
-  }
-  
-  .link:hover {
-    color: darkblue;         /* Change color on hover */
-  }
-  
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.link:hover {
+  color: darkblue;
+}
+
+/* กล่องคำอธิบายวิธีกรอก */
+.register-grid {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.register-info-box {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+  color: #333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.register-info-box strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #1a1a1a;
+}
+
+.register-info-box ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.5;
+}
+
+.register-info-box li {
+  margin-bottom: 4px;
+}
+
+/* คำแนะนำใต้ช่องกรอก */
+.field-hint {
+  display: block;
+  font-size: 0.75rem;
+  color: #555;
+  margin-top: 4px;
+  padding-left: 2px;
+  line-height: 1.35;
+}
+
+.field-hint--match {
+  color: #2e7d32;
+  font-weight: 500;
+}
+
+.field-hint--mismatch {
+  color: #c62828;
+  font-weight: 500;
+}
