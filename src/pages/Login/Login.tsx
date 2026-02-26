@@ -14,8 +14,7 @@ import {
   import Swal from 'sweetalert';
   import axios from 'axios';
   import './Login.css';
-import { getLineLoginUrl } from '../../utils/lineAuth';
-  
+
   const Login: React.FC = () => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -23,14 +22,11 @@ import { getLineLoginUrl } from '../../utils/lineAuth';
     
     useEffect(() => {
       const userSession = localStorage.getItem('userSession');
-      const token = localStorage.getItem('line_access_token');
-      if (userSession || token) {
+      if (userSession) {
         history.push('/home');
-      }
-       else {
+      } else {
         history.push('/login');
-    }
-
+      }
     }, [history]);
     
   const handleLogin = async () => {
@@ -76,27 +72,6 @@ import { getLineLoginUrl } from '../../utils/lineAuth';
           confirm: { text: 'ลองอีกครั้ง', className: 'swal-btn-confirm' },
         },
       });
-    }
-  };
-
-  const handleLineLogin = () => {
-    // Add your LINE login logic here
-    try {
-      const loginUrl = getLineLoginUrl();
-      window.location.href = loginUrl; // Redirect to LINE login
-    } catch (err) {
-      // Handle login failure
-      Swal({
-        title: 'เข้าสู่ระบบล้มเหลว',
-        text: 'Please check environment configuration!',
-        icon: 'error',
-        className: 'swal-login-error',
-        buttons: {
-          cancel: { visible: false },
-          confirm: { text: 'ตกลง', className: 'swal-btn-confirm' },
-        },
-      });
-      console.error('LINE login error:', err);
     }
   };
 
@@ -163,24 +138,11 @@ import { getLineLoginUrl } from '../../utils/lineAuth';
                 <IonButton
                   className="form_submit"
                   expand="block"
-                  color={'submit'}
+                  color="submit"
+                  shape="round"
                   onClick={handleLogin}
                 >
                   SIGN IN
-                </IonButton>
-              </IonCol>
-            </IonRow>
-             {/* LINE Login Button */}
-             <IonRow>
-              <IonCol>
-                <IonButton
-                  expand="block"
-                  color="success"
-                  className="line-login-button"
-                  onClick={handleLineLogin}
-                >
-                  <IonImg src="/icon/line.png" style={{ width: '20px', marginRight: '8px' }} />
-                  LINE
                 </IonButton>
               </IonCol>
             </IonRow>
@@ -193,7 +155,7 @@ import { getLineLoginUrl } from '../../utils/lineAuth';
                   fill="outline"
                   onClick={handleGuestLogin} // Use handleGuestLogin
                 >
-                  <b>guest</b>
+                  <b>JOIN AS GUEST</b>
                 </IonButton>
               </IonCol>
             </IonRow>

@@ -56,15 +56,8 @@ const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null); // Check session state
 
   useEffect(() => {
-    // Check for LINE token in local storage
-    const token = localStorage.getItem('line_access_token');
-    // Check for Basic token in local storage
     const userSession = localStorage.getItem('userSession');
-    if (token || userSession) {
-      setIsAuthenticated(true); // User is authenticated
-    } else {
-      setIsAuthenticated(false); // User is not authenticated
-    }
+    setIsAuthenticated(!!userSession);
   }, []);
 
   // Show a loading state while checking authentication
