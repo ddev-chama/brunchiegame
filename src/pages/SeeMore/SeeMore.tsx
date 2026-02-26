@@ -56,11 +56,11 @@ const SeeMore: React.FC = () => {
                 <img src="/card/2-7.png" alt="icon-4" />
               </IonCard>
             </IonCol>
-            {/* <IonCol size="6">
-              <IonCard className="custom-card" button onClick={() => goToShuffle('icon-7', '/card/2-9.png')}>
+            <IonCol size="6">
+              <IonCard className="custom-card" button onClick={() => goToShuffle('icon-7', '/card/2-9.png')} disabled={isNavigating}>
                 <img src="/card/2-9.png" alt="icon-7" />
               </IonCard>
-            </IonCol> */}
+            </IonCol>
           </IonRow>
         </IonGrid>
       </IonContent>
