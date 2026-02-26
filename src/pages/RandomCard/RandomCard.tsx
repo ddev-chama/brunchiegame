@@ -92,8 +92,7 @@ const RandomCard: React.FC = () => {
   const loadMultipleTextContent = async () => {
     setLoading(true);
     const allLines: { text: string, iconFile: string }[] = [];
-    /* ซ่อนหมวด 18+ ใน random mode */
-    const questionFiles = ['question1', 'question2', 'question3', 'question4'];
+    const questionFiles = ['question1', 'question2', 'question3', 'question4', 'question7'];
 
     const questionFileLines: { [key: string]: { text: string, iconFile: string }[] } = {};
 
