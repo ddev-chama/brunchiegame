@@ -39,6 +39,7 @@ import SeeMore from './pages/SeeMore/SeeMore';
 import PlayGame from './pages/PlayGame/PlayGame';
 import EndGame from './pages/EndGame/EndGame';
 import Register from './pages/Register/Register';
+import ForgotPassword from './pages/ForgotPassword/ForgotPassword';
 import RandomCard from './pages/RandomCard/RandomCard';
 import Callback from './pages/Callback/Callback';
 import RiffleShuffle from './components/RiffleShuffle/RiffleShuffle';
@@ -82,6 +83,9 @@ const App: React.FC = () => {
           </Route>
           <Route exact path="/register">
             <Register />
+          </Route>
+          <Route exact path="/forgot-password">
+            <ForgotPassword />
           </Route>
           <Route exact path="/gamesetup">
             {isAuthenticated ? <GameSetup /> : <Redirect to="/login" />}

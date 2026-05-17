@@ -1,0 +1,235 @@
+import React, { useState } from 'react';
+import {
+  IonContent,
+  IonInput,
+  IonPage,
+  IonButton,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonImg,
+  IonNote,
+  IonText,
+} from '@ionic/react';
+import { useHistory } from 'react-router-dom';
+import Swal from 'sweetalert';
+import axios from 'axios';
+import { checkUserExists, maskEmail } from '../../services/checkUser';
+import './ForgotPassword.css';
+
+const LOST_PASSWORD_URL = 'https://brunchtime.org/wp-login.php?action=lostpassword';
+
+/** แปลงข้อความ error จาก WordPress เป็นภาษาไทย */
+function translateWpError(raw: string): string {
+  const lower = raw.toLowerCase();
+  if (lower.includes('no account') || lower.includes('username or email')) {
+    return 'ไม่พบบัญชีที่ใช้ชื่อผู้ใช้นี้ กรุณาตรวจสอบอีกครั้ง';
+  }
+  if (lower.includes('email could not be sent') || lower.includes('not be correctly configured')) {
+    return 'ไม่สามารถส่งอีเมลได้ในขณะนี้ กรุณาลองใหม่ภายหลังหรือติดต่อผู้ดูแลระบบ';
+  }
+  if (lower.includes('invalid') || lower.includes('empty')) {
+    return 'กรุณากรอกชื่อผู้ใช้ให้ถูกต้อง';
+  }
+  return raw.length <= 160 ? raw : 'ไม่สามารถดำเนินการได้ กรุณาลองอีกครั้ง';
+}
+
+/** แยกข้อความจาก HTML ของ wp-login.php */
+function parseLostPasswordHtml(html: string): { ok: boolean; message: string } {
+  const errorBlock = html.match(/id="login_error"[\s\S]*?<p>([\s\S]*?)<\/p>/i);
+  if (errorBlock) {
+    const text = errorBlock[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    console.log('[ForgotPassword] WP error:', text);
+    return { ok: false, message: translateWpError(text) };
+  }
+
+  return {
+    ok: true,
+    message:
+      'เราได้ส่งลิงก์ตั้งรหัสผ่านใหม่ไปที่อีเมลของคุณแล้ว กรุณาตรวจสอบกล่องจดหมาย (รวมถึงโฟลเดอร์สแปม)',
+  };
+}
+
+const ForgotPassword: React.FC = () => {
+  const [username, setUsername] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const history = useHistory();
+
+  const validate = (): string | null => {
+    const value = username.trim();
+    if (!value) {
+      return 'กรุณากรอกชื่อผู้ใช้ (Username)';
+    }
+    if (/\s/.test(value)) {
+      return 'ชื่อผู้ใช้ต้องไม่มีช่องว่าง';
+    }
+    return null;
+  };
+
+  const handleSubmit = async () => {
+    const err = validate();
+    if (err) {
+      Swal({ title: 'กรุณาตรวจสอบข้อมูล', text: err, icon: 'error' });
+      return;
+    }
+
+    setSubmitting(true);
+    const loginValue = username.trim();
+    console.log('[ForgotPassword] เริ่มขั้นตอนลืมรหัสผ่าน:', loginValue);
+
+    try {
+      // 1) ตรวจสอบว่ามี user ในระบบ
+      const checkResult = await checkUserExists(loginValue);
+      const exists = checkResult.success && checkResult.data?.username_exists === true;
+
+      if (!exists) {
+        console.log('[ForgotPassword] ไม่พบผู้ใช้ในระบบ');
+        Swal({
+          title: 'ไม่พบบัญชีผู้ใช้',
+          text: 'ไม่พบชื่อผู้ใช้ (Username) นี้ในระบบ กรุณาตรวจสอบและลองอีกครั้ง',
+          icon: 'error',
+          className: 'swal-forgot-error',
+          buttons: {
+            cancel: { visible: false },
+            confirm: { text: 'ตกลง', className: 'swal-btn-confirm' },
+          },
+        });
+        return;
+      }
+
+      const userEmail = checkResult.data?.email;
+      console.log('[ForgotPassword] พบผู้ใช้ อีเมล:', userEmail ? maskEmail(userEmail) : '(ไม่มี)');
+
+      // 2) ส่งลิงก์รีเซ็ตรหัสผ่านผ่าน WordPress
+      const body = new URLSearchParams({
+        user_login: loginValue,
+        redirect_to: '',
+        'wp-submit': 'ขอรหัสผ่านใหม่',
+      });
+
+      const response = await axios.post<string>(LOST_PASSWORD_URL, body.toString(), {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        responseType: 'text',
+      });
+
+      const result = parseLostPasswordHtml(response.data);
+      console.log('[ForgotPassword] ผลลัพธ์ส่งอีเมล:', result);
+
+      if (result.ok) {
+        const emailHint = userEmail
+          ? `เราได้ส่งลิงก์ตั้งรหัสผ่านใหม่ไปที่ ${maskEmail(userEmail)} แล้ว กรุณาตรวจสอบกล่องจดหมาย (รวมถึงโฟลเดอร์สแปม)`
+          : result.message;
+
+        Swal({
+          title: 'ส่งคำขอสำเร็จ',
+          text: emailHint,
+          icon: 'success',
+          className: 'swal-forgot-success',
+          buttons: {
+            cancel: { visible: false },
+            confirm: { text: 'กลับไปเข้าสู่ระบบ', className: 'swal-btn-confirm' },
+          },
+        }).then(() => history.push('/login'));
+      } else {
+        Swal({
+          title: 'ไม่สามารถส่งคำขอได้',
+          text: result.message,
+          icon: 'error',
+          className: 'swal-forgot-error',
+          buttons: {
+            cancel: { visible: false },
+            confirm: { text: 'ลองอีกครั้ง', className: 'swal-btn-confirm' },
+          },
+        });
+      }
+    } catch (error) {
+      console.error('[ForgotPassword] เกิดข้อผิดพลาด:', error);
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        Swal({
+          title: 'เกิดข้อผิดพลาด',
+          text: 'ไม่สามารถยืนยันตัวตนกับเซิร์ฟเวอร์ได้ กรุณาติดต่อผู้ดูแลระบบ',
+          icon: 'error',
+        });
+        return;
+      }
+      Swal({
+        title: 'เกิดข้อผิดพลาด',
+        text: 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองอีกครั้ง',
+        icon: 'error',
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <IonPage>
+      <IonContent color="main">
+        <IonGrid className="forgot-grid">
+          <IonRow>
+            <IonCol size="12">
+              <IonImg src="/icon/KJKJ_LOGO.png" alt="Logo" />
+            </IonCol>
+          </IonRow>
+
+          <IonRow className="forgot-info-row">
+            <IonCol size="12">
+              <div className="forgot-info-box">
+                <strong>ลืมรหัสผ่าน</strong>
+                <p>
+                  กรอกชื่อผู้ใช้ (Username) ที่ใช้ลงทะเบียน ระบบจะตรวจสอบบัญชีก่อน
+                  แล้วส่งลิงก์ตั้งรหัสผ่านใหม่ไปที่อีเมลของคุณ
+                </p>
+              </div>
+            </IonCol>
+          </IonRow>
+
+          <IonRow>
+            <IonCol size="12">
+              <IonInput
+                className="form_login"
+                type="text"
+                placeholder="ชื่อผู้ใช้ (Username)"
+                value={username}
+                onIonInput={(e) => setUsername(e.detail.value ?? '')}
+                autocomplete="username"
+                disabled={submitting}
+              />
+              <IonNote className="field-hint">
+                ใช้ Username ที่ลงทะเบียนไว้ (ภาษาอังกฤษ/ตัวเลข ไม่มีช่องว่าง)
+              </IonNote>
+            </IonCol>
+          </IonRow>
+
+          <IonRow className="ion-padding-top">
+            <IonCol size="12">
+              <IonButton
+                className="form_submit"
+                expand="block"
+                color="submit"
+                shape="round"
+                onClick={handleSubmit}
+                disabled={submitting}
+              >
+                {submitting ? 'กำลังตรวจสอบ...' : 'ส่งลิงก์ตั้งรหัสผ่านใหม่'}
+              </IonButton>
+            </IonCol>
+          </IonRow>
+
+          <IonRow className="ion-padding-top">
+            <IonCol size="12">
+              <IonText className="forgot-back">
+                จำรหัสผ่านได้แล้ว?{' '}
+                <span className="link" onClick={() => history.push('/login')}>
+                  กลับไปเข้าสู่ระบบ
+                </span>
+              </IonText>
+            </IonCol>
+          </IonRow>
+        </IonGrid>
+      </IonContent>
+    </IonPage>
+  );
+};
+
+export default ForgotPassword;

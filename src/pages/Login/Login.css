@@ -67,6 +67,17 @@
 	color: darkblue;         /* Change color on hover */
   }
 
+.forgot-password-link {
+	color: #3d5998;
+	cursor: pointer;
+	font-size: 0.85rem;
+	text-decoration: underline;
+}
+
+.forgot-password-link:hover {
+	color: #2a4070;
+}
+
 /* ========== SweetAlert Popup UX (เข้าสู่ระบบสำเร็จ/ล้มเหลว) ========== */
 .swal-overlay {
   background: rgba(0, 0, 0, 0.5);

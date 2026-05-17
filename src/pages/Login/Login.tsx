@@ -93,7 +93,12 @@ import {
     });
   };
   const handleRegisterClick = () => {
-    history.push('/register'); // Navigate to the register page
+    history.push('/register');
+  };
+
+  const handleForgotPasswordClick = () => {
+    console.log('[Login] ไปหน้าลืมรหัสผ่าน');
+    history.push('/forgot-password');
   };
     return (
       <IonPage>
@@ -107,7 +112,7 @@ import {
             <IonRow>
               <IonInput
                 className="form_login"
-                placeholder="Email"
+                placeholder="อีเมล (Email)"
                 value={email}
                 onIonInput={(e) => setEmail(e.detail.value!)}
                 autocomplete="off"
@@ -117,7 +122,7 @@ import {
               <IonInput
                 type="password"
                 className="form_login"
-                placeholder="Password"
+                placeholder="รหัสผ่าน (Password)"
                 value={password}
                 onIonInput={(e) => setPassword(e.detail.value!)}
                 autocomplete="off"
@@ -127,11 +132,15 @@ import {
               <IonCol>
                 <IonText className="ion-float-left">
                   <input type="checkbox" value={'save'} name="rememberMe" />
-                  <label> Remember me</label>
+                  <label> จดจำฉัน</label>
                 </IonText>
               </IonCol>
               <IonCol>
-                <IonText className="ion-float-right">Forget Password?</IonText>
+                <IonText className="ion-float-right">
+                  <span className="forgot-password-link" onClick={handleForgotPasswordClick}>
+                    ลืมรหัสผ่าน?
+                  </span>
+                </IonText>
               </IonCol>
             </IonRow>
             <IonRow>
@@ -143,7 +152,7 @@ import {
                   shape="round"
                   onClick={handleLogin}
                 >
-                  SIGN IN
+                  เข้าสู่ระบบ
                 </IonButton>
               </IonCol>
             </IonRow>
@@ -156,7 +165,7 @@ import {
                   fill="outline"
                   onClick={handleGuestLogin} // Use handleGuestLogin
                 >
-                  <b>JOIN AS GUEST</b>
+                  <b>เข้าแบบผู้เยี่ยมชม</b>
                 </IonButton>
               </IonCol>
             </IonRow>
@@ -175,7 +184,7 @@ import {
             <IonRow className="ion-padding-top">
               <IonCol>
                 <div className="forgotpass">
-                  Don’t have an account?<span className='link' onClick={handleRegisterClick}>Register</span>
+                  ยังไม่มีบัญชี? <span className="link" onClick={handleRegisterClick}>ลงทะเบียน</span>
                 </div>
               </IonCol>
             </IonRow>
