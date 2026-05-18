@@ -15,40 +15,8 @@ import { useHistory } from 'react-router-dom';
 import Swal from 'sweetalert';
 import axios from 'axios';
 import { checkUserExists, maskEmail } from '../../services/checkUser';
+import { sendKjkjResetPasswordEmail } from '../../services/kjkjResetPassword';
 import './ForgotPassword.css';
-
-const LOST_PASSWORD_URL = 'https://brunchtime.org/wp-login.php?action=lostpassword';
-
-/** แปลงข้อความ error จาก WordPress เป็นภาษาไทย */
-function translateWpError(raw: string): string {
-  const lower = raw.toLowerCase();
-  if (lower.includes('no account') || lower.includes('username or email')) {
-    return 'ไม่พบบัญชีที่ใช้ชื่อผู้ใช้นี้ กรุณาตรวจสอบอีกครั้ง';
-  }
-  if (lower.includes('email could not be sent') || lower.includes('not be correctly configured')) {
-    return 'ไม่สามารถส่งอีเมลได้ในขณะนี้ กรุณาลองใหม่ภายหลังหรือติดต่อผู้ดูแลระบบ';
-  }
-  if (lower.includes('invalid') || lower.includes('empty')) {
-    return 'กรุณากรอกชื่อผู้ใช้ให้ถูกต้อง';
-  }
-  return raw.length <= 160 ? raw : 'ไม่สามารถดำเนินการได้ กรุณาลองอีกครั้ง';
-}
-
-/** แยกข้อความจาก HTML ของ wp-login.php */
-function parseLostPasswordHtml(html: string): { ok: boolean; message: string } {
-  const errorBlock = html.match(/id="login_error"[\s\S]*?<p>([\s\S]*?)<\/p>/i);
-  if (errorBlock) {
-    const text = errorBlock[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-    console.log('[ForgotPassword] WP error:', text);
-    return { ok: false, message: translateWpError(text) };
-  }
-
-  return {
-    ok: true,
-    message:
-      'เราได้ส่งลิงก์ตั้งรหัสผ่านใหม่ไปที่อีเมลของคุณแล้ว กรุณาตรวจสอบกล่องจดหมาย (รวมถึงโฟลเดอร์สแปม)',
-  };
-}
 
 const ForgotPassword: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -78,7 +46,7 @@ const ForgotPassword: React.FC = () => {
     console.log('[ForgotPassword] เริ่มขั้นตอนลืมรหัสผ่าน:', loginValue);
 
     try {
-      // 1) ตรวจสอบว่ามี user ในระบบ
+      // 1) ตรวจสอบว่ามี user ในระบบ + ได้ email และ reset_password_link
       const checkResult = await checkUserExists(loginValue);
       const exists = checkResult.success && checkResult.data?.username_exists === true;
 
@@ -97,31 +65,37 @@ const ForgotPassword: React.FC = () => {
         return;
       }
 
-      const userEmail = checkResult.data?.email;
-      console.log('[ForgotPassword] พบผู้ใช้ อีเมล:', userEmail ? maskEmail(userEmail) : '(ไม่มี)');
+      const userEmail = checkResult.data?.email?.trim();
+      const resetPasswordLink = checkResult.data?.reset_password_link?.trim();
 
-      // 2) ส่งลิงก์รีเซ็ตรหัสผ่านผ่าน WordPress
-      const body = new URLSearchParams({
-        user_login: loginValue,
-        redirect_to: '',
-        'wp-submit': 'ขอรหัสผ่านใหม่',
+      console.log('[ForgotPassword] พบผู้ใช้:', {
+        email: userEmail ? maskEmail(userEmail) : '(ไม่มี)',
+        hasResetLink: Boolean(resetPasswordLink),
       });
 
-      const response = await axios.post<string>(LOST_PASSWORD_URL, body.toString(), {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        responseType: 'text',
+      if (!userEmail || !resetPasswordLink) {
+        console.error('[ForgotPassword] ข้อมูลไม่ครบจาก check-user:', checkResult.data);
+        Swal({
+          title: 'ไม่สามารถดำเนินการได้',
+          text: 'ระบบไม่สามารถสร้างลิงก์ตั้งรหัสผ่านได้ กรุณาลองอีกครั้งภายหลัง',
+          icon: 'error',
+        });
+        return;
+      }
+
+      // 2) ส่งอีเมล reset password ผ่าน core-api
+      const mailResult = await sendKjkjResetPasswordEmail({
+        email: userEmail,
+        reset_password_link: resetPasswordLink,
       });
 
-      const result = parseLostPasswordHtml(response.data);
-      console.log('[ForgotPassword] ผลลัพธ์ส่งอีเมล:', result);
+      console.log('[ForgotPassword] ผลลัพธ์ส่งอีเมล core-api:', mailResult);
 
-      if (result.ok) {
-        const emailHint = userEmail
-          ? `เราได้ส่งลิงก์ตั้งรหัสผ่านใหม่ไปที่ ${maskEmail(userEmail)} แล้ว กรุณาตรวจสอบกล่องจดหมาย (รวมถึงโฟลเดอร์สแปม)`
-          : result.message;
+      if (mailResult.sent === true) {
+        const emailHint = `เราได้ส่งลิงก์ตั้งรหัสผ่านใหม่ไปที่ ${maskEmail(userEmail)} แล้ว กรุณาตรวจสอบกล่องจดหมาย (รวมถึงโฟลเดอร์สแปม)`;
 
         Swal({
-          title: 'ส่งคำขอสำเร็จ',
+          title: 'ส่งอีเมลแล้ว',
           text: emailHint,
           icon: 'success',
           className: 'swal-forgot-success',
@@ -132,8 +106,10 @@ const ForgotPassword: React.FC = () => {
         }).then(() => history.push('/login'));
       } else {
         Swal({
-          title: 'ไม่สามารถส่งคำขอได้',
-          text: result.message,
+          title: 'ไม่สามารถส่งอีเมลได้',
+          text:
+            mailResult.message ||
+            'ไม่สามารถส่งอีเมลได้ในขณะนี้ กรุณาลองใหม่ภายหลังหรือติดต่อผู้ดูแลระบบ',
           icon: 'error',
           className: 'swal-forgot-error',
           buttons: {

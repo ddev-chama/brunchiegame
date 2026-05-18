@@ -57,6 +57,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/custom-api/, ''),
       },
+      '/core-api': {
+        target: 'https://core-api.diamondgrains-staging.brunchtimeshop.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/core-api/, ''),
+      },
     },
   },
   test: {

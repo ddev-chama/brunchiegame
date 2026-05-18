@@ -4,6 +4,7 @@ import { CHECK_USER_URL, CUSTOM_AUTH_API } from '../config/customAuthApi';
 export interface CheckUserData {
   username_exists: boolean;
   email?: string;
+  reset_password_link?: string;
 }
 
 export interface CheckUserResponse {

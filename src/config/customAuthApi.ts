@@ -1,7 +1,7 @@
 /** Custom Auth API (brunchtime.org) */
 export const CUSTOM_AUTH_API = {
   BASE_URL: 'https://brunchtime.org/wp-json/custom/v1',
-  API_KEY: 'uca_sk_aff4f9f1ef0d8cba93f1573c702e8d8ae794f1d538babc71fb386b4aea81e5a5',
+  API_KEY: 'uca_sk_3cebc4513707d4f877a63ee77316091814efbe98ff4831a94b76b7b03b27d828',
 } as const;
 
 /** ใช้ proxy ใน dev เพื่อหลีกเลี่ยงปัญหา CORS กับ header X-API-Key */
