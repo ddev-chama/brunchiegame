@@ -60,7 +60,7 @@ const Home: React.FC = () => {
     if (overlay) {
       overlay.onclick = (e) => {
         if (e.target === overlay) {
-          swal.close();
+          swal.close?.();
         }
       };
     }
