@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CHECK_USER_URL, CUSTOM_AUTH_API } from '../config/customAuthApi';
+import { CHECK_USER_URL } from '../config/customAuthApi';
 
 export interface CheckUserData {
   username_exists: boolean;
@@ -14,9 +14,16 @@ export interface CheckUserResponse {
   message?: string;
 }
 
-/** ตรวจสอบว่ามี username ในระบบหรือไม่ */
+/** ตรวจสอบว่ามี username ในระบบหรือไม่ (Bearer token — หลีกเลี่ยง CORS กับ custom header) */
 export async function checkUserExists(username: string): Promise<CheckUserResponse> {
   console.log('[checkUser] ตรวจสอบ username:', username);
+
+  const token = import.meta.env.VITE_WP_CHECK_USER_KEY;
+  if (!token || typeof token !== 'string' || !token.trim()) {
+    console.error('[checkUser] ไม่พบ VITE_WP_CHECK_USER_KEY — ตั้งค่าใน .env แล้วรีสตาร์ท dev server');
+    const err = new Error('MISSING_VITE_WP_CHECK_USER_KEY');
+    throw err;
+  }
 
   const { data } = await axios.post<CheckUserResponse>(
     CHECK_USER_URL,
@@ -24,7 +31,7 @@ export async function checkUserExists(username: string): Promise<CheckUserRespon
     {
       headers: {
         'Content-Type': 'application/json',
-        'X-API-Key': CUSTOM_AUTH_API.API_KEY,
+        Authorization: `Bearer ${token}`,
       },
     }
   );

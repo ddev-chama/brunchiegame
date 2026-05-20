@@ -120,10 +120,18 @@ const ForgotPassword: React.FC = () => {
       }
     } catch (error) {
       console.error('[ForgotPassword] เกิดข้อผิดพลาด:', error);
+      if (error instanceof Error && error.message === 'MISSING_VITE_WP_CHECK_USER_KEY') {
+        Swal({
+          title: 'การตั้งค่าไม่ครบ',
+          text: 'กรุณาตั้งค่า VITE_WP_CHECK_USER_KEY ในไฟล์ .env แล้วรีสตาร์ทเซิร์ฟเวอร์พัฒนา',
+          icon: 'error',
+        });
+        return;
+      }
       if (axios.isAxiosError(error) && error.response?.status === 401) {
         Swal({
           title: 'เกิดข้อผิดพลาด',
-          text: 'ไม่สามารถยืนยันตัวตนกับเซิร์ฟเวอร์ได้ กรุณาติดต่อผู้ดูแลระบบ',
+          text: 'ไม่สามารถยืนยันตัวตนกับเซิร์ฟเวอร์ได้ (Bearer ไม่ถูกต้องหรือหมดอายุ) กรุณาติดต่อผู้ดูแลระบบ',
           icon: 'error',
         });
         return;

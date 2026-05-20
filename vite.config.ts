@@ -52,11 +52,6 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''), // remove /api prefix when forwarding
       },
-      '/custom-api': {
-        target: 'https://brunchtime.org/wp-json/custom/v1',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/custom-api/, ''),
-      },
       '/core-api': {
         target: 'https://core-api.diamondgrains-staging.brunchtimeshop.com',
         changeOrigin: true,
